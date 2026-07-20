@@ -403,6 +403,24 @@ h1, h2, h3, p { margin-top: 0; }
   color: #78716c;
 }
 
+.mcp-link {
+  display: block;
+  color: var(--ink);
+  transition: color .2s;
+}
+
+.mcp-link:hover { color: var(--orange); }
+
+.mcp-link small {
+  display: block;
+  margin-top: 4px;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.mcp-link:hover small { color: var(--orange); }
+
 .site-footer a:last-child { font: 11px var(--mono); }
 
 /* --- Guide pages --- */

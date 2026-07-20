@@ -1,0 +1,69 @@
+<!doctype html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">    <meta property="og:title" content="codebase-memory-mcp — Agent Atlas" />
+    <meta property="og:description" content="Instalación y uso de codebase-memory-mcp, el servidor MCP de inteligencia de código." />
+    <meta property="og:type" content="article" />
+    <meta property="og:image" content="https://codeconfig.net/mcp-codebase-memory.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="codebase-memory-mcp — Agent Atlas" />
+    <meta name="twitter:description" content="Instalación y uso de codebase-memory-mcp, el servidor MCP de inteligencia de código." />
+    <meta name="twitter:image" content="https://codeconfig.net/mcp-codebase-memory.png" />
+    <meta name="description" content="Instalación y uso de codebase-memory-mcp, el servidor MCP de inteligencia de código."><title>codebase-memory-mcp — Agent Atlas</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css?v=20260720"><link rel="manifest" href="manifest.json"><link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="canonical" href="https://codeconfig.net/mcp-codebase-memory.html">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "codebase-memory-mcp — Agent Atlas",
+      "url": "https://codeconfig.net/mcp-codebase-memory.html",
+      "description": "Instalación y uso de codebase-memory-mcp, el servidor MCP de inteligencia de código.",
+      "isPartOf": { "@type": "WebSite", "name": "Agent Atlas", "url": "https://codeconfig.net/" }
+    }
+    </script></head><body class="guide-shell"><header class="guide-header"><div class="container"><a class="brand" href="index.html"><span class="brand-mark">✦</span> Agent Atlas</a><a class="back-link" href="index.html#mcp">← Volver a MCP</a></div></header><main class="guide-main"><section class="guide-hero"><div class="container guide-hero-grid"><div><span class="section-kicker">MCP / SERVIDOR DE INTELIGENCIA DE CÓDIGO</span><h1>codebase-memory-mcp</h1><p>Motor de inteligencia de código basado en grafos. Indexa repositorios completos en milisegundos y responde consultas estructurales en menos de 1 ms. Binario único, cero dependencias.</p></div><div class="guide-meta"><div>REPO<b><a href="https://github.com/DeusData/codebase-memory-mcp" target="_blank" rel="noreferrer">DeusData/codebase-memory-mcp ↗</a></b></div><div>LENGUAJE<b>C puro</b></div></div></div></section><div class="container guide-layout"><aside class="guide-nav" role="navigation" aria-label="Navegación de la guía"><span>EN ESTA GUÍA</span><a href="#que-es">01 — Qué es</a><a href="#instalar">02 — Instalar</a><a href="#indexar">03 — Indexar un proyecto</a><a href="#claude">04 — Claude Code</a><a href="#codex">05 — Codex CLI</a><a href="#opencode">06 — OpenCode</a><a href="#cli">07 — CLI</a><a href="#herramientas">08 — Herramientas</a><a href="#recursos">09 — Recursos</a></aside><article class="guide-content">
+<section id="que-es"><span class="section-kicker">01 / ¿QUÉ ES?</span><h2>Un asistente estructural para tu agente</h2><p><strong>codebase-memory-mcp</strong> es un servidor MCP (Model Context Protocol) escrito en C puro que construye un grafo de conocimiento persistente de tu código base. Indexa funciones, clases, llamadas, rutas HTTP y conexiones entre servicios usando <a href="https://tree-sitter.github.io/tree-sitter/" target="_blank" rel="noreferrer">tree-sitter</a> en 158 lenguajes, con resolución de tipos híbrida para Python, TypeScript, Go, Rust, Java, Kotlin, C++, C#, PHP y más.</p><p>No incluye un LLM — tu agente (Claude Code, Codex, OpenCode) es la capa de inteligencia que traduce lenguaje natural a consultas sobre el grafo.</p><div class="callout"><strong>99% menos tokens</strong><p>Cinco consultas estructurales consumen ~3.400 tokens contra ~412.000 explorando archivo por archivo. Una consulta al grafo reemplaza docenas de ciclos de grep/read.</p></div></section>
+<section id="instalar"><span class="section-kicker">02 / INSTALACIÓN</span><h2>Instalá el servidor MCP</h2><p>El instalador oficial detecta tu sistema operativo, descarga el binario y configura los agentes que tengas instalados (Claude Code, Codex, OpenCode, VS Code, Cursor, Windsurf y más).</p><p><strong>macOS / Linux (one-liner):</strong></p><div class="code-block"><button class="copy-button" title="Copiar comando al portapapeles">Copiar</button><pre><code>curl -fsSL https://raw.githubusercontent.com/DeusData/codebase-memory-mcp/main/install.sh | bash</code></pre></div><p>Con visualizador de grafos 3D incluido:</p><div class="code-block"><button class="copy-button" title="Copiar comando al portapapeles">Copiar</button><pre><code>curl -fsSL https://raw.githubusercontent.com/DeusData/codebase-memory-mcp/main/install.sh | bash -s -- --ui</code></pre></div><p><strong>Windows (PowerShell):</strong></p><div class="code-block"><button class="copy-button" title="Copiar comando al portapapeles">Copiar</button><pre><code>Invoke-WebRequest -Uri https://raw.githubusercontent.com/DeusData/codebase-memory-mcp/main/install.ps1 -OutFile install.ps1
+Unblock-File .\install.ps1
+.\install.ps1</code></pre></div><p>Opciones: <code>--ui</code> (visualizador), <code>--skip-config</code> (solo binario), <code>--dir=ruta</code> (ubicación personalizada).</p><p><strong>Otros métodos:</strong></p><ul><li><strong>npm:</strong> <code>npm install -g codebase-memory-mcp</code></li><li><strong>Homebrew:</strong> <code>brew install codebase-memory-mcp</code></li><li><strong>Arch Linux:</strong> <code>yay -S codebase-memory-mcp-bin</code></li><li><strong>go install:</strong> <code>go install github.com/DeusData/codebase-memory-mcp@latest</code></li></ul></section>
+<section id="indexar"><span class="section-kicker">03 / PRIMER USO</span><h2>Indexá un proyecto</h2><p>Una vez instalado, reiniciá tu agente y ejecutá este comando dentro de la sesión:</p><div class="code-block"><button class="copy-button" title="Copiar comando al portapapeles">Copiar</button><pre><code>Indexá este proyecto</code></pre></div><p>El agente traduce la instrucción a la herramienta <code>index_repository</code> del MCP. El indexado es inmediato para proyectos promedio (Django en ~6 segundos, Linux kernel en 3 minutos).</p><p>Para activar el indexado automático al conectar un proyecto nuevo:</p><div class="code-block"><button class="copy-button" title="Copiar comando al portapapeles">Copiar</button><pre><code>codebase-memory-mcp config set auto_index true</code></pre></div></section>
+<section id="claude"><span class="section-kicker">04 / CLAUDE CODE</span><h2>Usar con Claude Code</h2><p>El instalador detecta Claude Code automáticamente y configura la entrada en <code>~/.claude.json</code>. También instala un skill y tres agentes de grafo (Scout, Verify, Auditor) con hooks <code>SessionStart</code> y <code>SubagentStart</code>.</p><p>Para configuración manual, agregá esto a <code>~/.claude.json</code>:</p><div class="code-block"><button class="copy-button" title="Copiar comando al portapapeles">Copiar</button><pre><code>{
+  "mcpServers": {
+    "codebase-memory-mcp": {
+      "command": "/ruta/completa/codebase-memory-mcp",
+      "args": []
+    }
+  }
+}</code></pre></div><p>Verificá que el servidor esté activo con <code>/mcp</code> — deberías ver 15 herramientas disponibles.</p></section>
+<section id="codex"><span class="section-kicker">05 / CODEX CLI</span><h2>Usar con Codex CLI</h2><p>El instalador configura Codex automáticamente. Agrega <code>AGENTS.md</code>, un skill y tres agentes de solo lectura con hooks <code>SessionStart</code> y <code>SubagentStart</code>.</p><p>Para configuración manual, agregá el servidor MCP a tu <code>~/.codex/config.toml</code>:</p><div class="code-block"><button class="copy-button" title="Copiar comando al portapapeles">Copiar</button><pre><code>[mcp_servers.codebase-memory-mcp]
+command = "/ruta/completa/codebase-memory-mcp"</code></pre></div></section>
+<section id="opencode"><span class="section-kicker">06 / OPENCODE</span><h2>Usar con OpenCode</h2><p>El instalador detecta OpenCode y configura el servidor en el archivo global de configuración. También agrega <code>AGENTS.md</code>, un skill y tres agentes de solo lectura con permisos denegados por defecto.</p><p>Para configuración manual, agregá esta entrada a tu <code>~/.config/opencode/opencode.json</code>:</p><div class="code-block"><button class="copy-button" title="Copiar comando al portapapeles">Copiar</button><pre><code>{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "codebase-memory-mcp": {
+      "type": "command",
+      "command": "/ruta/completa/codebase-memory-mcp",
+      "args": []
+    }
+  }
+}</code></pre></div></section>
+<section id="cli"><span class="section-kicker">07 / LÍNEA DE COMANDOS</span><h2>Comandos útiles</h2><p>Todas las herramientas MCP también se pueden invocar desde la terminal:</p><div class="code-block"><button class="copy-button" title="Copiar comando al portapapeles">Copiar</button><pre><code># Indexar un proyecto
+codebase-memory-mcp cli index_repository '{"repo_path": "/ruta/al/proyecto"}'
+
+# Listar proyectos indexados
+codebase-memory-mcp cli list_projects
+
+# Buscar funciones por nombre
+codebase-memory-mcp cli search_graph '{"project": "mi-proyecto", "name_pattern": ".*Handler.*"}'
+
+# Trazar llamadas
+codebase-memory-mcp cli trace_path '{"project": "mi-proyecto", "function_name": "buscar", "direction": "both"}'
+
+# Consulta tipo Cypher
+codebase-memory-mcp cli query_graph '{"project": "mi-proyecto", "query": "MATCH (f:Function) RETURN f.name LIMIT 5"}'
+
+# Ver configuración
+codebase-memory-mcp config list
+
+# Auto-index al conectar
+codebase-memory-mcp config set auto_index true
+
+# Actualizar
+codebase-memory-mcp update</code></pre></div></section>
+<section id="herramientas"><span class="section-kicker">08 / HERRAMIENTAS MCP</span><h2>Las 15 herramientas del servidor</h2><p><strong>Indexado:</strong></p><ul><li><code>index_repository</code> — Indexa un repositorio en el grafo</li><li><code>list_projects</code> — Lista proyectos indexados con conteo de nodos/edges</li><li><code>delete_project</code> — Elimina un proyecto del grafo</li><li><code>index_status</code> — Estado del indexado de un proyecto</li></ul><p><strong>Búsqueda y consulta:</strong></p><ul><li><code>search_graph</code> — Búsqueda estructurada por etiqueta, nombre, archivo</li><li><code>trace_path</code> — Recorrido BFS: quién llama a una función y a quién llama</li><li><code>query_graph</code> — Consultas tipo Cypher (solo lectura)</li><li><code>get_graph_schema</code> — Esquema del grafo: tipos de nodos, edges, propiedades</li><li><code>get_code_snippet</code> — Lee el código fuente de una función por nombre</li><li><code>search_code</code> — Búsqueda de texto dentro de archivos indexados</li></ul><p><strong>Análisis:</strong></p><ul><li><code>get_architecture</code> — Vista general: lenguajes, paquetes, rutas, clusters</li><li><code>detect_changes</code> — Mapea cambios de git a símbolos afectados</li><li><code>manage_adr</code> — CRUD de Architecture Decision Records</li><li><code>ingest_traces</code> — Importa trazas de ejecución para validar conexiones HTTP</li></ul></section>
+<section id="recursos"><span class="section-kicker">09 / SEGUÍ PROFUNDIZANDO</span><h2>Documentación oficial</h2><ul><li><a href="https://github.com/DeusData/codebase-memory-mcp" target="_blank" rel="noreferrer">Repositorio oficial en GitHub ↗</a></li><li><a href="https://arxiv.org/abs/2603.27277" target="_blank" rel="noreferrer">Paper académico (arXiv) ↗</a></li><li><a href="https://github.com/DeusData/codebase-memory-mcp/blob/main/docs/cbmignore.md" target="_blank" rel="noreferrer">Cómo ignorar archivos (.cbmignore) ↗</a></li></ul></section><footer class="guide-footer">Agent Atlas · codebase-memory-mcp corre 100% local. Tu código nunca sale de tu máquina.</footer></article></div></main><script src="app.js?v=20260720"></script></body></html>

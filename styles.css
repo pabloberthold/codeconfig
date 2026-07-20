@@ -1,9 +1,9 @@
 :root {
-  --ink: #fafaf9;
-  --muted: #a8a29e;
-  --paper: #0c0a09;
-  --panel: #1c1917;
-  --line: rgba(168, 162, 158, .12);
+  --ink: #292524;
+  --muted: #78716c;
+  --paper: #ece7e0;
+  --panel: #e3ddd5;
+  --line: rgba(41, 37, 36, .1);
   --orange: #ff7a2f;
   --violet: #a78bfa;
   --amber: #fbbf24;
@@ -15,11 +15,11 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --ink: #fafaf9;
-    --muted: #a8a29e;
-    --paper: #0c0a09;
-    --panel: #1c1917;
-    --line: rgba(168, 162, 158, .12);
+    --ink: #292524;
+    --muted: #78716c;
+    --paper: #ece7e0;
+    --panel: #e3ddd5;
+    --line: rgba(41, 37, 36, .1);
     --orange: #ff7a2f;
   }
 }
@@ -57,7 +57,7 @@ a { color: inherit; text-decoration: none; }
   position: fixed;
   pointer-events: none;
   filter: blur(10px);
-  opacity: .22;
+  opacity: .08;
   border-radius: 999px;
 }
 
@@ -185,12 +185,12 @@ h1, h2, h3, p { margin-top: 0; }
 .button-primary {
   padding: 14px 17px;
   background: var(--orange);
-  color: #0c0a09;
+  color: #292524;
   border-radius: 8px;
 }
 
 .button-primary span { font-size: 18px; }
-.button-text { color: #c5d0e4; }
+.button-text { color: #57534e; }
 .button-text span { color: var(--orange); font-size: 18px; }
 
 .signal-line {
@@ -252,7 +252,7 @@ h1, h2, h3, p { margin-top: 0; }
   border: 1px solid var(--line);
   border-radius: 14px;
   transition: transform .2s, border-color .2s, background .2s;
-  background: rgba(28, 25, 23, .72);
+  background: rgba(227, 221, 213, .72);
 }
 
 .agent-card:hover {
@@ -260,9 +260,9 @@ h1, h2, h3, p { margin-top: 0; }
   border-color: rgba(255, 122, 47, .38);
 }
 
-.codex-card:hover { background: #1a1817; }
-.opencode-card:hover { background: #1a1817; }
-.claude-card:hover { background: #1a1817; }
+.codex-card:hover { background: #d9d2c9; }
+.opencode-card:hover { background: #d9d2c9; }
+.claude-card:hover { background: #d9d2c9; }
 
 .card-top {
   display: flex;
@@ -410,7 +410,7 @@ h1, h2, h3, p { margin-top: 0; }
 .guide-shell { background: var(--paper); }
 
 .guide-header {
-  background: rgba(12, 10, 9, .86);
+  background: rgba(236, 231, 224, .86);
   backdrop-filter: blur(14px);
   position: sticky;
   top: 0;
@@ -519,7 +519,7 @@ h1, h2, h3, p { margin-top: 0; }
 
 .guide-content p,
 .guide-content li {
-  color: #a8a29e;
+  color: #57534e;
   font-size: 14px;
   line-height: 1.75;
 }
@@ -556,8 +556,8 @@ h1, h2, h3, p { margin-top: 0; }
 .code-block {
   position: relative;
   margin: 13px 0 18px;
-  background: #0e0c0b;
-  border: 1px solid rgba(168, 162, 158, .13);
+  background: #292524;
+  border: 1px solid rgba(41, 37, 36, .2);
   border-radius: 9px;
   overflow: hidden;
 }
@@ -566,7 +566,7 @@ h1, h2, h3, p { margin-top: 0; }
   margin: 0;
   padding: 18px;
   overflow: auto;
-  color: #e7e5e4;
+  color: #d4ccc4;
   font: 12px/1.7 var(--mono);
 }
 
@@ -580,7 +580,7 @@ h1, h2, h3, p { margin-top: 0; }
   border-radius: 5px;
   padding: 5px 8px;
   background: var(--panel);
-  color: #a8a29e;
+  color: #57534e;
   font: 10px var(--mono);
   cursor: pointer;
 }

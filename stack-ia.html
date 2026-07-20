@@ -65,15 +65,40 @@ limiter:
   --restart unless-stopped \
   ghcr.io/open-webui/open-webui:main</code></pre></div></section>
 <section id="probar"><span class="section-kicker">06 / VERIFICACIÓN</span><h2>Probar que todo funciona</h2><p>En la misma máquina o desde cualquier dispositivo de la red local:</p><ul><li><strong>Ollama API</strong> — <code>http://IP_DEL_HOST:11434/api/tags</code></li><li><strong>SearXNG</strong> — <code>http://IP_DEL_HOST:4000</code></li><li><strong>Open WebUI</strong> — <code>http://IP_DEL_HOST:3000</code></li></ul><p>Si necesitás saber la IP de tu servidor:</p><div class="code-block"><button class="copy-button" title="Copiar comando al portapapeles">Copiar</button><pre><code>ip addr show | grep "inet " | grep -v 127.0.0.1</code></pre></div><p>En Open WebUI andá a <strong>Configuración → Conexiones</strong> y verificá que aparece Ollama conectado. Luego en <strong>Configuración → Web Search</strong> elegí SearXNG como motor de búsqueda, poné <code>http://searxng:8080</code> como URL.</p></section>
-<section id="systemd"><span class="section-kicker">07 / SERVICIOS PERSISTENTES</span><h2>Que arranquen solos al prender el equipo</h2><p>Con Podman + systemd podés generar unidades para cada contenedor usando <code>podman generate systemd</code> o simplemente con <code>--restart always</code> (que en Podman funciona con systemd user).</p><div class="code-block"><button class="copy-button" title="Copiar comando al portapapeles">Copiar</button><pre><code># Habilitar linger para el usuario (permite servicios al iniciar sesión)
+<section id="systemd"><span class="section-kicker">07 / SERVICIOS PERSISTENTES</span><h2>Que arranquen solos al prender el equipo</h2><p>Generá una unidad systemd por cada contenedor. Usamos <code>--new</code> para que systemd cree el contenedor desde cero al arrancar (no depende de que exista previamente).</p><div class="code-block"><button class="copy-button" title="Copiar comando al portapapeles">Copiar</button><pre><code># Habilitar linger para el usuario (permite servicios al iniciar sesión)
 sudo loginctl enable-linger $USER
 
-# Generar unidad systemd para Open WebUI
+# Crear carpeta de unidades systemd
 mkdir -p ~/.config/systemd/user
-podman generate systemd --name open-webui --new > ~/.config/systemd/user/container-open-webui.service
-systemctl --user enable container-open-webui
-systemctl --user start container-open-webui
 
-# Ver estado de todos los servicios
-systemctl --user list-units 'container-*'</code></pre></div><p>Si querés un solo comando para arrancar todo el stack al iniciar sesión, repetí el <code>generate systemd</code> con los otros contenedores.</p></section>
+# Generar unidad para Ollama
+podman generate systemd --name ollama --new > ~/.config/systemd/user/container-ollama.service
+
+# Generar unidad para SearXNG
+podman generate systemd --name searxng --new > ~/.config/systemd/user/container-searxng.service
+
+# Generar unidad para Open WebUI
+podman generate systemd --name open-webui --new > ~/.config/systemd/user/container-open-webui.service
+
+# Recargar y habilitar todo
+systemctl --user daemon-reload
+systemctl --user enable container-ollama container-searxng container-open-webui
+
+# Arrancar ahora (sin reiniciar)
+systemctl --user start container-ollama container-searxng container-open-webui
+
+# Ver estado
+systemctl --user list-units 'container-*'</code></pre></div><p>Opcional: creá un <em>target</em> que agrupe los tres para <code>enable</code>/<code>start</code> de un solo comando:</p><div class="code-block"><button class="copy-button" title="Copiar comando al portapapeles">Copiar</button><pre><code>cat > ~/.config/systemd/user/stack-ia.target << 'EOF'
+[Unit]
+Description=Stack IA local — Ollama + SearXNG + Open WebUI
+BindsTo=container-ollama.service container-searxng.service container-open-webui.service
+After=container-ollama.service container-searxng.service container-open-webui.service
+
+[Install]
+WantedBy=default.target
+EOF
+
+systemctl --user daemon-reload
+systemctl --user enable stack-ia.target
+systemctl --user start stack-ia.target</code></pre></div></section>
 <section id="tips"><span class="section-kicker">08 / TIPS Y AJUSTES</span><h2>Para el día a día</h2><ul><li><strong>Más modelos:</strong> <code>podman exec ollama ollama pull llama3.2:3b</code>, <code>mistral</code>, <code>phi4:14b</code>. Corré varios al mismo tiempo.</li><li><strong>GPU NVIDIA:</strong> si instalaste <code>nvidia-container-toolkit</code>, Ollama detecta la GPU automáticamente. Verificá con <code>podman logs ollama | grep -i cuda</code> o <code>podman exec ollama ollama ps</code> tras cargar un modelo.</li><li><strong>Firewall:</strong> abrí los puertos necesarios. Con <code>firewalld</code> (Fedora/RHEL): <code>sudo firewall-cmd --add-port=11434/tcp --add-port=3000/tcp --add-port=4000/tcp --permanent && sudo firewall-cmd --reload</code>. Con <code>ufw</code> (Ubuntu/Debian): <code>sudo ufw allow 11434/tcp && sudo ufw allow 3000/tcp && sudo ufw allow 4000/tcp</code>.</li><li><strong>Sin GPU:</strong> todo corre por CPU. Elegí modelos chicos como <code>llama3.2:3b</code> o <code>phi4-mini:3.8b</code>.</li><li><strong>Elegí el nombre del host:</strong> ponele un DNS local como <code>ia.local</code> así no tenés que acordarte la IP.</li><li><strong>Puertos personalizados:</strong> cambiá el lado izquierdo del <code>-p</code> si tenés conflictos (ej. <code>-p 8080:8080</code> para Open WebUI).</li></ul></section><footer class="guide-footer">Agent Atlas · Todo corre 100% local. Sin telemetría, sin cuentas, sin nube.</footer></article></div></main><script src="app.js?v=20260720"></script></body></html>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://codeconfig.net/</loc><priority>1.0</priority></url>
+  <url><loc>https://codeconfig.net/codex.html</loc><priority>0.8</priority></url>
+  <url><loc>https://codeconfig.net/opencode.html</loc><priority>0.8</priority></url>
+  <url><loc>https://codeconfig.net/claude-code.html</loc><priority>0.8</priority></url>
+  <url><loc>https://codeconfig.net/openrouter.html</loc><priority>0.7</priority></url>
+  <url><loc>https://codeconfig.net/ollama.html</loc><priority>0.7</priority></url>
+  <url><loc>https://codeconfig.net/cloud-providers.html</loc><priority>0.7</priority></url>
+</urlset>

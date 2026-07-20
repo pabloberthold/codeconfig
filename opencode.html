@@ -20,20 +20,31 @@
     </script></head>
 <body class="guide-shell"><header class="guide-header"><div class="container"><a class="brand" href="index.html"><span class="brand-mark">✦</span> Agent Atlas</a><a class="back-link" href="index.html#agentes">← Volver a los agentes</a></div></header><main class="guide-main"><section class="guide-hero"><div class="container guide-hero-grid"><div><span class="section-kicker">OPEN SOURCE / GUÍA DE CONFIGURACIÓN</span><h1>OpenCode</h1><p>Un agente de terminal abierto y proveedor-agnóstico. Conectalo en pocos pasos a OpenRouter, Ollama local o cualquiera de los proveedores compatibles.</p></div><div class="guide-meta"><div>ENTORNO<b>macOS · Linux · Windows</b></div><div>CONFIGURACIÓN<b><code>opencode.json</code></b></div></div></div></section>
 <div class="container guide-layout"><aside class="guide-nav" role="navigation" aria-label="Navegación de la guía"><span>EN ESTA GUÍA</span><a href="#instalar">01 — Instalar</a><a href="#inicio">02 — Primer inicio</a><a href="#openrouter">03 — OpenRouter</a><a href="#ollama">04 — Ollama local</a><a href="#recursos">05 — Recursos</a></aside><article class="guide-content">
-<section id="instalar"><span class="section-kicker">01 / INSTALACIÓN</span><h2>Instalá OpenCode</h2><p>El instalador oficial es la forma más directa. También podés usar npm si ya administrás las herramientas globales con Node.js.</p><div class="code-block"><button class="copy-button" title="Copiar comando al portapapeles">Copiar</button><pre><code>curl -fsSL https://opencode.ai/install | bash
-# alternativa: npm install -g opencode-ai</code></pre></div><p>Verificá la instalación abriendo una carpeta de trabajo y ejecutando <code>opencode</code>.</p></section>
+<section id="instalar"><span class="section-kicker">01 / INSTALACIÓN</span><h2>Instalá OpenCode</h2><p>Elegí uno de estos métodos y verificá que el binario quedó disponible.</p><div class="code-block"><button class="copy-button" title="Copiar comando al portapapeles">Copiar</button><pre><code># Instalador oficial (multiplataforma)
+curl -fsSL https://opencode.ai/install | bash
+
+# Homebrew (macOS / Linux)
+brew install anomalyco/tap/opencode
+
+# npm (multiplataforma)
+npm install -g opencode-ai
+
+opencode --version</code></pre></div><p>En Windows: <code>scoop install opencode</code> o <code>choco install opencode</code>. Verificá con <code>opencode --version</code>.</p></section>
 <section id="inicio"><span class="section-kicker">02 / PRIMER INICIO</span><h2>Conectá un proveedor desde la interfaz</h2><div class="step"><span class="step-num">1</span><p>Iniciá <code>opencode</code> en el directorio de tu proyecto.</p></div><div class="step"><span class="step-num">2</span><p>Escribí <code>/connect</code>, elegí el proveedor y pegá la clave cuando la pida.</p></div><div class="step"><span class="step-num">3</span><p>Usá <code>/models</code> para seleccionar el modelo que vas a utilizar.</p></div><div class="code-block"><button class="copy-button" title="Copiar comando al portapapeles">Copiar</button><pre><code>cd mi-proyecto
 opencode
 # dentro de OpenCode: /connect</code></pre></div></section>
-<section id="openrouter"><span class="section-kicker">03 / PROVEEDOR REMOTO</span><h2>Conectar OpenRouter</h2><p>OpenCode incluye OpenRouter entre sus proveedores. Creá la key en OpenRouter y seguí el flujo interactivo: no hace falta escribir la clave en un archivo de configuración.</p><div class="code-block"><button class="copy-button" title="Copiar comando al portapapeles">Copiar</button><pre><code>opencode
+<section id="openrouter"><span class="section-kicker">03 / PROVEEDOR REMOTO</span><h2>Conectar OpenRouter</h2><p>OpenCode incluye OpenRouter entre sus proveedores. Creá la key en OpenRouter y seguí el flujo interactivo: la clave se guarda en <code>~/.local/share/opencode/auth.json</code>.</p><div class="code-block"><button class="copy-button" title="Copiar comando al portapapeles">Copiar</button><pre><code>opencode
 # dentro de OpenCode:
 /connect
-# Elegí “OpenRouter” y pegá tu API key
-/models</code></pre></div><p>Los modelos habituales ya aparecen en el selector. Si necesitás registrar uno extra o ajustar opciones de routing, creá o editá <code>opencode.json</code>:</p><div class="code-block"><button class="copy-button" title="Copiar comando al portapapeles">Copiar</button><pre><code>{
+# Elegí "OpenRouter" y pegá tu API key
+/models</code></pre></div><p>Los modelos habituales ya aparecen en el selector. Para registrar modelos extra o ajustar opciones de routing, agregalos al config global <code>~/.config/opencode/opencode.json</code> o al local <code>./opencode.json</code>:</p><div class="code-block"><button class="copy-button" title="Copiar comando al portapapeles">Copiar</button><pre><code>{
   "$schema": "https://opencode.ai/config.json",
   "provider": {
     "openrouter": {
-      "models": { "moonshotai/kimi-k2": {} }
+      "models": {
+        "~anthropic/claude-sonnet-latest": {},
+        "~google/gemini-flash-latest": {}
+      }
     }
   }
 }</code></pre></div></section>

@@ -13,6 +13,17 @@
 
 * { box-sizing: border-box; }
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #eaf0ff;
+    --muted: #9aa8bd;
+    --paper: #0a0d14;
+    --panel: #111621;
+    --line: rgba(213, 225, 255, .12);
+    --lime: #bdff6c;
+  }
+}
+
 html { scroll-behavior: smooth; }
 
 @media (prefers-reduced-motion: reduce) {

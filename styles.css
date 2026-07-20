@@ -278,11 +278,27 @@ h1, h2, h3, p { margin-top: 0; }
   border-radius: 13px;
 }
 
-.app-icon svg { display: block; }
+.app-icon > * { display: block; }
 
-.icon-codex { color: #c6baff; background: #292248; }
-.icon-opencode { color: #8ff7dc; background: #113d3d; }
-.icon-claude { color: #ffc2ac; background: #542d32; }
+.icon-codex { background: #292248; }
+.icon-opencode { background: #113d3d; }
+.icon-claude { background: #542d32; }
+
+.logo-mask {
+  display: block;
+  width: 26px;
+  height: 26px;
+  background: #fff;
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+}
+
+.logo-openai { mask-image: url(logos/openai.svg); }
+.logo-opencode { mask-image: url(logos/opencode.svg); }
+.logo-anthropic { mask-image: url(logos/anthropic.svg); }
+.logo-openrouter { mask-image: url(logos/openrouter.svg); }
+.logo-ollama { mask-image: url(logos/ollama.svg); }
 
 .status {
   font: 10px var(--mono);
@@ -366,6 +382,11 @@ h1, h2, h3, p { margin-top: 0; }
 }
 
 .provider-symbol svg { display: block; }
+.provider-symbol .logo-mask {
+  width: 28px;
+  height: 28px;
+  background: var(--orange);
+}
 
 .provider-list strong,
 .provider-list small { display: block; }

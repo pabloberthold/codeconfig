@@ -37,13 +37,12 @@ opencode
 # dentro de OpenCode:
 /connect
 # Elegí "OpenRouter" y pegá tu API key
-/models</code></pre></div><p>Los modelos habituales ya aparecen en el selector. Para registrar modelos extra o ajustar opciones de routing, agregalos al config global <code>~/.config/opencode/opencode.json</code> o al local <code>./opencode.json</code>:</p><div class="code-block"><button class="copy-button" title="Copiar comando al portapapeles">Copiar</button><pre><code>{
+/models</code></pre></div><p>Los modelos gratuitos aparecen bajo <code>openrouter/free</code>. Para registrar otros modelos, agregalos al config global <code>~/.config/opencode/opencode.json</code> o al local <code>./opencode.json</code>:</p><div class="code-block"><button class="copy-button" title="Copiar comando al portapapeles">Copiar</button><pre><code>{
   "$schema": "https://opencode.ai/config.json",
   "provider": {
     "openrouter": {
       "models": {
-        "~anthropic/claude-sonnet-latest": {},
-        "~google/gemini-flash-latest": {}
+        "openrouter/free": {}
       }
     }
   }

@@ -276,9 +276,9 @@ h1, h2, h3, p { margin-top: 0; }
   display: grid;
   place-items: center;
   border-radius: 13px;
-  font-size: 29px;
-  font-weight: 500;
 }
+
+.app-icon svg { display: block; }
 
 .icon-codex { color: #c6baff; background: #292248; }
 .icon-opencode { color: #8ff7dc; background: #113d3d; }
@@ -358,11 +358,14 @@ h1, h2, h3, p { margin-top: 0; }
 }
 
 .provider-symbol {
-  display: block;
+  display: flex;
+  align-items: center;
+  height: 40px;
   margin-bottom: 10px;
-  font-size: 34px;
   color: var(--orange);
 }
+
+.provider-symbol svg { display: block; }
 
 .provider-list strong,
 .provider-list small { display: block; }
@@ -420,6 +423,12 @@ h1, h2, h3, p { margin-top: 0; }
 }
 
 .mcp-link:hover small { color: var(--orange); }
+
+.mcp-icon {
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 6px;
+}
 
 .site-footer a:last-child { font: 11px var(--mono); }
 

@@ -1,0 +1,76 @@
+<!doctype html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">    <meta property="og:title" content="Stack IA local — Agent Atlas" />
+    <meta property="og:description" content="Paso a paso para montar Ollama + SearXNG + Open WebUI con Podman, accesible desde toda tu red local." />
+    <meta property="og:type" content="article" />
+    <meta property="og:image" content="https://codeconfig.net/stack-ia.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Stack IA local — Agent Atlas" />
+    <meta name="twitter:description" content="Paso a paso para montar Ollama + SearXNG + Open WebUI con Podman, accesible desde toda tu red local." />
+    <meta name="twitter:image" content="https://codeconfig.net/stack-ia.png" />
+    <meta name="description" content="Paso a paso para montar Ollama + SearXNG + Open WebUI con Podman, accesible desde toda tu red local."><title>Stack IA local — Agent Atlas</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css?v=20260720"><link rel="manifest" href="manifest.json"><link rel="icon" href="favicon.svg" type="image/svg+xml"><link rel="canonical" href="https://codeconfig.net/stack-ia.html">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Stack IA local — Agent Atlas",
+      "url": "https://codeconfig.net/stack-ia.html",
+      "description": "Paso a paso para montar Ollama + SearXNG + Open WebUI con Podman, accesible desde toda tu red local.",
+      "isPartOf": { "@type": "WebSite", "name": "Agent Atlas", "url": "https://codeconfig.net/" }
+    }
+    </script></head><body class="guide-shell"><header class="guide-header"><div class="container"><a class="brand" href="index.html"><span class="brand-mark">✦</span> Agent Atlas</a><a class="back-link" href="index.html#stack-ia">← Volver a Stack IA</a></div></header><main class="guide-main"><section class="guide-hero"><div class="container guide-hero-grid"><div><span class="section-kicker">GUÍA / STACK DE INTELIGENCIA ARTIFICIAL LOCAL</span><h1>Stack IA con Podman</h1><p>Ollama + SearXNG + Open WebUI. Todo en contenedores Podman, accesible desde cualquier dispositivo de tu red local. Sin depender de la nube.</p></div><div class="guide-meta"><div>SERVICIOS<b>Ollama · SearXNG · Open WebUI</b></div><div>RUNTIME<b>Podman</b></div></div></div></section><div class="container guide-layout"><aside class="guide-nav" role="navigation" aria-label="Navegación de la guía"><span>EN ESTA GUÍA</span><a href="#requisitos">01 — Requisitos</a><a href="#red">02 — Red compartida</a><a href="#ollama">03 — Ollama</a><a href="#searxng">04 — SearXNG</a><a href="#open-webui">05 — Open WebUI</a><a href="#probar">06 — Probar el stack</a><a href="#systemd">07 — Servicios persistentes</a><a href="#tips">08 — Tips</a></aside><article class="guide-content">
+<section id="requisitos"><span class="section-kicker">01 / REQUISITOS</span><h2>Que tener listo antes de empezar</h2><p>Vas a necesitar una máquina Linux con Podman instalado y, si querés aceleración por GPU, los drivers de NVIDIA + <code>nvidia-container-toolkit</code>.</p><div class="code-block"><button class="copy-button" title="Copiar comando al portapapeles">Copiar</button><pre><code># Podman
+sudo dnf install podman podman-docker -y   # Fedora
+sudo apt install podman podman-docker -y   # Ubuntu/Debian
+
+# Drivers NVIDIA + container toolkit (opcional, para GPU)
+sudo dnf install akmod-nvidia xorg-x11-drv-nvidia-cuda   # Fedora
+sudo apt install nvidia-driver-xxx nvidia-utils-xxx       # Ubuntu
+sudo apt install nvidia-container-toolkit                 # ambos
+
+# Verificar Podman
+podman --version
+podman info | grep -i host</code></pre></div></section>
+<section id="red"><span class="section-kicker">02 / RED COMPARTIDA</span><h2>Crear la red Podman</h2><p>Para que los contenedores se vean entre sí por nombre, creamos una red tipo <code>bridge</code>:</p><div class="code-block"><button class="copy-button" title="Copiar comando al portapapeles">Copiar</button><pre><code>podman network create stack-ia</code></pre></div></section>
+<section id="ollama"><span class="section-kicker">03 / OLLAMA</span><h2>Servidor de modelos locales</h2><p>Ollama expone su API en el puerto <code>11434</code>. Lo levantamos con la variable <code>OLLAMA_HOST=0.0.0.0</code> para que sea accesible desde cualquier equipo de la red.</p><div class="code-block"><button class="copy-button" title="Copiar comando al portapapeles">Copiar</button><pre><code>podman run -d \
+  --name ollama \
+  --network stack-ia \
+  -p 11434:11434 \
+  -v ollama_data:/root/.ollama \
+  -e OLLAMA_HOST=0.0.0.0 \
+  --hooks-dir=/usr/share/containers/oci/hooks.d/ \
+  docker.io/ollama/ollama</code></pre></div><p>Descargá un modelo liviano para empezar:</p><div class="code-block"><button class="copy-button" title="Copiar comando al portapapeles">Copiar</button><pre><code>podman exec ollama ollama pull llama3.2:3b</code></pre></div><p>Probá que responde:</p><div class="code-block"><button class="copy-button" title="Copiar comando al portapapeles">Copiar</button><pre><code>curl http://localhost:11434/api/tags</code></pre></div></section>
+<section id="searxng"><span class="section-kicker">04 / SEARXNG</span><h2>Buscador autogestionado</h2><p>SearXNG es un metabuscador que agrega resultados de Google, DuckDuckGo, Bing y otros sin rastreo. Open WebUI puede usarlo como motor de búsqueda para RAG.</p><p>Primero creá la carpeta de configuración:</p><div class="code-block"><button class="copy-button" title="Copiar comando al portapapeles">Copiar</button><pre><code>mkdir -p ~/searxng && cd ~/searxng</code></pre></div><p>Inicializá los archivos de configuración:</p><div class="code-block"><button class="copy-button" title="Copiar comando al portapapeles">Copiar</button><pre><code>podman run -d --name searxng-tmp docker.io/searxng/searxng
+podman cp searxng-tmp:/etc/searxng/settings.yml .
+podman cp searxng-tmp:/etc/searxng/uwsgi.ini .
+podman rm -f searxng-tmp</code></pre></div><p>Ajustá <code>settings.yml</code> para permitir la red local:</p><div class="code-block"><button class="copy-button" title="Copiar comando al portapapeles">Copiar</button><pre><code># settings.yml — buscá estas líneas y ajustalas
+server:
+  bind_address: "0.0.0.0"
+  secret_key: "cambia-esto-por-una-clave-aleatoria"
+  limiter: false          # desactivá si usás solo en LAN</code></pre></div><div class="code-block"><button class="copy-button" title="Copiar comando al portapapeles">Copiar</button><pre><code>podman run -d \
+  --name searxng \
+  --network stack-ia \
+  -p 4000:8080 \
+  -v ~/searxng/settings.yml:/etc/searxng/settings.yml:ro \
+  -v ~/searxng/uwsgi.ini:/etc/searxng/uwsgi.ini:ro \
+  -e SEARXNG_BASE_URL=http://0.0.0.0:4000/ \
+  docker.io/searxng/searxng</code></pre></div></section>
+<section id="open-webui"><span class="section-kicker">05 / OPEN WEBUI</span><h2>Interfaz web para Ollama</h2><p>Open WebUI es el frontend conectado a Ollama. Se comunica con SearXNG a través del nombre del contenedor en la red compartida.</p><div class="code-block"><button class="copy-button" title="Copiar comando al portapapeles">Copiar</button><pre><code>podman run -d \
+  --name open-webui \
+  --network stack-ia \
+  -p 3000:8080 \
+  -v open-webui_data:/app/backend/data \
+  -e OLLAMA_BASE_URL=http://ollama:11434 \
+  --restart unless-stopped \
+  docker.io/ghcr.io/open-webui/open-webui:main</code></pre></div></section>
+<section id="probar"><span class="section-kicker">06 / VERIFICACIÓN</span><h2>Probar que todo funciona</h2><p>En la misma máquina o desde cualquier dispositivo de la red local:</p><ul><li><strong>Ollama API</strong> — <code>http://IP_DEL_HOST:11434/api/tags</code></li><li><strong>SearXNG</strong> — <code>http://IP_DEL_HOST:4000</code></li><li><strong>Open WebUI</strong> — <code>http://IP_DEL_HOST:3000</code></li></ul><p>Si necesitás saber la IP de tu servidor:</p><div class="code-block"><button class="copy-button" title="Copiar comando al portapapeles">Copiar</button><pre><code>ip addr show | grep "inet " | grep -v 127.0.0.1</code></pre></div><p>En Open WebUI andá a <strong>Configuración → Conexiones</strong> y verificá que aparece Ollama conectado. Luego en <strong>Configuración → Web Search</strong> elegí SearXNG como motor de búsqueda, poné <code>http://searxng:8080</code> como URL.</p></section>
+<section id="systemd"><span class="section-kicker">07 / SERVICIOS PERSISTENTES</span><h2>Que arranquen solos al prender el equipo</h2><p>Con Podman + systemd podés generar unidades para cada contenedor usando <code>podman generate systemd</code> o simplemente con <code>--restart always</code> (que en Podman funciona con systemd user).</p><div class="code-block"><button class="copy-button" title="Copiar comando al portapapeles">Copiar</button><pre><code># Habilitar linger para el usuario (permite servicios al iniciar sesión)
+sudo loginctl enable-linger $USER
+
+# Generar unidad systemd para Open WebUI
+mkdir -p ~/.config/systemd/user
+podman generate systemd --name open-webui --files --new
+systemctl --user enable container-open-webui
+systemctl --user start container-open-webui
+
+# Ver estado de todos los servicios
+systemctl --user list-units 'container-*'</code></pre></div><p>Si querés un solo comando para arrancar todo el stack al iniciar sesión, repetí el <code>generate systemd</code> con los otros contenedores.</p></section>
+<section id="tips"><span class="section-kicker">08 / TIPS Y AJUSTES</span><h2>Para el día a día</h2><ul><li><strong>Más modelos:</strong> <code>podman exec ollama ollama pull llama3.2:3b</code>, <code>mistral</code>, <code>phi4:14b</code>. Corré varios al mismo tiempo.</li><li><strong>GPU NVIDIA:</strong> si instalaste <code>nvidia-container-toolkit</code> y configuraste los hooks, Ollama detecta la GPU automáticamente. Verificá con <code>podman exec ollama nvidia-smi</code>.</li><li><strong>Firewall:</strong> si usás <code>firewalld</code>, abrí los puertos: <code>sudo firewall-cmd --add-port=11434/tcp --add-port=3000/tcp --add-port=4000/tcp --permanent && sudo firewall-cmd --reload</code>.</li><li><strong>Sin GPU:</strong> todo corre por CPU. Elegí modelos chicos como <code>llama3.2:3b</code> o <code>phi4-mini:3.8b</code>.</li><li><strong>Elegí el nombre del host:</strong> ponele un DNS local como <code>ia.local</code> así no tenés que acordarte la IP.</li><li><strong>Puertos personalizados:</strong> cambiá el lado izquierdo del <code>-p</code> si tenés conflictos (ej. <code>-p 8080:8080</code> para Open WebUI).</li></ul></section><footer class="guide-footer">Agent Atlas · Todo corre 100% local. Sin telemetría, sin cuentas, sin nube.</footer></article></div></main><script src="app.js?v=20260720"></script></body></html>
